@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'auteur{% endblock %}
+
+{% block body %}
+    <style>
+        .author-details {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .author-details img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 3px solid #3498db;
+            margin-bottom: 20px;
+        }
+
+        .author-details h2 {
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+
+        .author-details p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .author-details a {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #fff;
+            background: #3498db;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .author-details a:hover {
+            background: #2c3e50;
+        }
+    </style>
+
+    <div class="author-details">
+        <img src="{{ author.picture }}" alt="{{ author.username }}">
+        <h2>{{ author.username }}</h2>
+        <p><strong>Email :</strong> {{ author.email }}</p>
+        <p><strong>Nombre de livres :</strong> {{ author.nb_books }}</p>
+
+        <a href="{{ path('list_authors') }}">⬅ Retour à la liste</a>
+    </div>
+{% endblock %}
