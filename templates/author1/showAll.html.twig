@@ -1,0 +1,29 @@
+<h2>Liste des auteurs</h2>
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i in list %}
+        <tr>
+            <td>{{ i.id }}</td>
+            <td>{{ i.username }}</td>
+            <td>{{ i.email }}</td>
+            <td>
+                <button>Update</button>
+                <button>Delete</button>
+                <button>Details</button>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">No authors found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

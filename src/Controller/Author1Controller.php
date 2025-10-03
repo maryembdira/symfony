@@ -5,6 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\AuthorRepository;
+
 
 final class Author1Controller extends AbstractController
 {
@@ -110,6 +112,12 @@ public function authorDetails(int $id): Response
 
 
 
+
+}
+#[Route('/showAll', name: 'showAll')]
+public function showAll(AuthorRepository $repo) {
+    $authors=$repo->findAll();
+    return $this->render('author1/showAll.html.twig',['list'=>$authors]);
 
 }
 }
