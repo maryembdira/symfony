@@ -6,6 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\AuthorRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Author;
+use App\Form\AuthorType;
+use App\Entity\Book;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
+
+
 
 
 final class Author1Controller extends AbstractController
@@ -115,9 +124,78 @@ public function authorDetails(int $id): Response
 
 }
 #[Route('/showAll', name: 'showAll')]
-public function showAll(AuthorRepository $repo) {
+public function showAll(AuthorRepository $repo, ManagerRegistry $doctrine): Response {
     $authors=$repo->findAll();
-    return $this->render('author1/showAll.html.twig',['list'=>$authors]);
+    $bookRepo = $doctrine->getRepository(Book::class);
+    $books = $bookRepo->findAll(); //
+    return $this->render('author1/showAll.html.twig',[
+          'list'=>$authors,
+    'listbook' => $books,
+     ]);
 
 }
+
+#[Route('/addForm',name:'addForm')]
+    public function addForm(Request $request, ManagerRegistry $doctrine){
+    $author=new Author();
+    $form=$this->createForm(AuthorType::class,$author);
+    $form->add('Add',SubmitType::class);
+ 
+    $form->handleRequest($request);
+    if($form->isSubmitted()){
+     $em=$doctrine->getManager();
+     $em->persist($author);
+     $em->flush();
+     return $this->redirectToRoute('showAll');
+    }
+    return $this->render('author1/add.html.twig',['formulaire'=>$form->createView()]);
+    // return $this->renderForm()
+    }
+
+     #[Route('/deleteAuthor/{id}',name:'deleteAuthor')]
+    public function deleteAuthor($id,AuthorRepository $repo, ManagerRegistry $doctrine){
+     // chercher un auteur selon son id
+     //find , findAll , findOneby 
+     $author=$repo->find($id);
+     //procéder à la suppression 
+      $em=$doctrine->getManager();
+      $em->remove($author);
+      $em->flush();// l'ajout , la suppression et la modification
+      return $this->redirectToRoute('showAll');
+    }
+    #[Route('/showDetails/{id}',name:'showDetails')]
+    public function showDetails($id,AuthorRepository $repo){
+       $author=$repo->find($id);
+       return $this->render('author1/showDetails.html.twig',['author'=>$author]);
+    }
+
+    
+  #[Route('/update/{id}', name:'updateAuthor')]
+public function updateAuthor($id, ManagerRegistry $doctrine, Request $request): Response
+{
+    $em = $doctrine->getManager();
+    $author = $em->getRepository(Author::class)->find($id);
+
+    if (!$author) {
+        throw $this->createNotFoundException("Auteur introuvable !");
+    }
+
+    // Créer le formulaire avec les données existantes
+    $form = $this->createForm(AuthorType::class, $author);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em->flush(); // Pas besoin de persist car l’objet existe déjà
+        return $this->redirectToRoute('showAll'); // Retour vers la liste
+    }
+
+    return $this->render('author1/update.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
+
+
+
+
 }

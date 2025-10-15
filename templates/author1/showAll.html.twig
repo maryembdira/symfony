@@ -1,5 +1,54 @@
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-family: Arial, sans-serif;
+        background: #f9f9f9;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background: #333;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    tr:nth-child(even) {
+        background: #f2f2f2;
+    }
+
+    tr:hover {
+        background: #e6e6e6;
+    }
+
+    h1, h2 {
+        font-family: Arial, sans-serif;
+        color: #333;
+        margin-top: 30px;
+    }
+
+    a {
+        margin-right: 10px;
+        text-decoration: none;
+        color: #007BFF;
+        font-weight: bold;
+    }
+
+    a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+</style>
+
 <h2>Liste des auteurs</h2>
-<table border="1" cellpadding="8" cellspacing="0">
+<table>
     <thead>
         <tr>
             <th>ID</th>
@@ -15,15 +64,42 @@
             <td>{{ i.username }}</td>
             <td>{{ i.email }}</td>
             <td>
-                <button>Update</button>
-                <button>Delete</button>
-                <button>Details</button>
+                <a href="{{path('updateAuthor',{'id':i.id})}}">Update</a>
+                <a href="{{path('deleteAuthor',{'id':i.id})}}">Delete</a>
+                <a href="{{path('showDetails',{'id':i.id})}}">Details</a>
             </td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="4">No authors found</td>
+            <td colspan="4" style="text-align:center;">No authors found</td>
         </tr>
     {% endfor %}
     </tbody>
+</table>
+
+<h1>List of Books</h1>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Publication Date</th>
+        <th>Published</th>
+        <th>Category</th>
+        <th>Author</th>
+        <th>Actions</th>
+    </tr>
+  
+    {% for b in listbook %}
+    <tr>
+        <td>{{ b.title }}</td>
+        <td>{{ b.publicationDate ? b.publicationDate|date('Y-m-d') : '' }}</td>
+        <td>{{ b.published }}</td>
+        <td>{{ b.category }}</td>
+        <td>{{ b.author.username }}</td>
+        <td>
+            <a href="{{ path('deleteBook', {'id': b.id}) }}">Delete</a>
+            <a href="{{ path('updateBook', {'id': b.id}) }}">Update</a>
+            <a href="{{ path('showBookDetails', {'id': b.id}) }}">Show</a>
+        </td>
+    </tr>
+    {% endfor %}
 </table>
